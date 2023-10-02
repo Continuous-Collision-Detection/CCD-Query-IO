@@ -3,6 +3,7 @@
 #include <gmp.h>
 #include <cassert>
 #include <iostream>
+#include <cmath>
 
 namespace rio {
 
