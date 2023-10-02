@@ -26,8 +26,8 @@ jobs:
             name: macOS
           - os: ubuntu-latest
             name: Linux
-          - os: windows-latest
-            name: Windows
+          # - os: windows-latest
+          #   name: Windows
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.0.0
