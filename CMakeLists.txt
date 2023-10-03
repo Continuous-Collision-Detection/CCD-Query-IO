@@ -114,8 +114,8 @@ target_compile_definitions(ccd_io_ccd_io PUBLIC NOMINMAX)
 ################################################################################
 
 # GMP
-include(gmp)
-target_link_libraries(ccd_io_ccd_io PUBLIC GMP::GMP)
+find_package(GMP REQUIRED)
+target_link_libraries(ccd_io_ccd_io PUBLIC gmp::gmp)
 
 # JSON
 include(json)
