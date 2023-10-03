@@ -51,9 +51,9 @@ The following libraries are used in this project:
 #include <ccd_io/read_ccd_queries.hpp>
 
 // If the ground truth is in the same CSV file
-std::vector<CCDQuery> queries = read_ccd_queries("queries.csv");
+std::vector<ccd_io::CCDQuery> queries = ccd_io::read_ccd_queries("queries.csv");
 // or if the ground truth is in a separate JSON file
-std::vector<CCDQuery> queries = read_ccd_queries("queries.csv", "ground_truth.json");
+std::vector<ccd_io::CCDQuery> queries = ccd_io::read_ccd_queries("queries.csv", "ground_truth.json");
 ```
 
 CCDQuery is defined as follows:
