@@ -26,9 +26,9 @@ target_link_libraries(rio_tests PRIVATE rio::warnings)
 
 # Test data directory definition
 if(WIN32)
-  target_compile_definitions(rio_tests PUBLIC TEST_DATA_DIR_CSTR="${CMAKE_CURRENT_SOURCE_DIR}\\\\data\\\\")
+  target_compile_definitions(rio_tests PUBLIC RIO_TEST_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}\\\\data\\\\")
 else()
-  target_compile_definitions(rio_tests PUBLIC TEST_DATA_DIR_CSTR="${CMAKE_CURRENT_SOURCE_DIR}/data/")
+  target_compile_definitions(rio_tests PUBLIC RIO_TEST_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/data/")
 endif()
 
 ################################################################################

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <rio/logger.hpp>
+
 #include <gmp.h>
 #include <cassert>
 #include <iostream>
@@ -72,7 +74,11 @@ public:
     Rational(const std::string& str)
     {
         mpq_init(value);
-        mpq_set_str(value, str.c_str(), 10);
+        // The return value is 0 if the entire string is a valid number.
+        const int r = mpq_set_str(value, str.c_str(), 10);
+        if (r != 0 || denominator() == 0) {
+            log_and_throw_error("Invalid rational: {}", str);
+        }
     }
 
     ~Rational() { mpq_clear(value); }

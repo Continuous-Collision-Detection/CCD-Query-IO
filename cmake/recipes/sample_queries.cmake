@@ -5,7 +5,7 @@ endif()
 include(ExternalProject)
 include(FetchContent)
 
-set(RIO_SAMPLE_QUERIES_DIR "${PROJECT_SOURCE_DIR}/tests/sample-queries/" CACHE PATH "Where should we download sample queries?")
+set(RIO_SAMPLE_QUERIES_DIR "${PROJECT_SOURCE_DIR}/tests/data/sample-queries/" CACHE PATH "Where should we download sample queries?")
 
 ExternalProject_Add(
   sample_queries_download

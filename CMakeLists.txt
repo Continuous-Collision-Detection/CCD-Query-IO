@@ -116,6 +116,10 @@ target_compile_definitions(rio_rio PUBLIC NOMINMAX)
 include(gmp)
 target_link_libraries(rio_rio PUBLIC GMP::GMP)
 
+# JSON
+include(json)
+target_link_libraries(rio_rio PUBLIC nlohmann_json::nlohmann_json)
+
 # Logger
 include(spdlog)
 target_link_libraries(rio_rio PUBLIC spdlog::spdlog)
