@@ -58,7 +58,8 @@ endif()
 
 project(RationalCCDIO LANGUAGES CXX)
 
-option(RIO_BUILD_TESTS "Build unit-tests" ${RIO_TOPLEVEL_PROJECT})
+option(RIO_BUILD_TESTS             "Build unit-tests"            ${RIO_TOPLEVEL_PROJECT})
+option(RIO_DOWNLOAD_SAMPLE_QUERIES "Download sample CCD queries"                     OFF)
 
 # Set default minimum C++ standard
 if(RIO_TOPLEVEL_PROJECT)
@@ -123,6 +124,11 @@ target_link_libraries(rio_rio PUBLIC nlohmann_json::nlohmann_json)
 # Logger
 include(spdlog)
 target_link_libraries(rio_rio PUBLIC spdlog::spdlog)
+
+if(RIO_DOWNLOAD_SAMPLE_QUERIES)
+  include(sample_queries)
+  target_link_libraries(rio_tests PUBLIC rio::sample_queries)
+endif()
 
 # Warnings
 include(rio_warnings)
