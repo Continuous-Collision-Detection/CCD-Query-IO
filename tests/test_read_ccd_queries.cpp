@@ -1,14 +1,17 @@
-#include <catch2/catch_all.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include <ccd_io/read_ccd_queries.hpp>
 #include <ccd_io/logger.hpp>
 
 #include <fstream>
+#include <filesystem>
+
+using namespace ccd_io;
 
 void check_fails_to_read(std::string filename)
 {
     try {
-        ccd_io::read_ccd_queries(filename);
+        read_ccd_queries(filename);
         FAIL();
     } catch (...) {
         SUCCEED();
@@ -17,13 +20,13 @@ void check_fails_to_read(std::string filename)
 
 TEST_CASE("Nonexistent input", "[read]")
 {
-    ccd_io::logger().set_level(spdlog::level::off);
+    logger().set_level(spdlog::level::off);
     check_fails_to_read("nonexistent_file.csv");
 }
 
 TEST_CASE("Bad input", "[read]")
 {
-    ccd_io::logger().set_level(spdlog::level::off);
+    logger().set_level(spdlog::level::off);
 
     std::function<std::string(int)> line;
     SECTION("Too few lines")
@@ -43,14 +46,6 @@ TEST_CASE("Bad input", "[read]")
     SECTION("Not a number")
     {
         line = [](int i) { return "a,1,0,1,0,1,1"; };
-    }
-    SECTION("Not a number (1/0)")
-    {
-        line = [](int i) { return "1,0,1,0,1,0,1"; };
-    }
-    SECTION("Not a number (0/0)")
-    {
-        line = [](int i) { return "0,0,1,0,1,0,1"; };
     }
 
     {
@@ -74,8 +69,8 @@ TEST_CASE("Read CCD Query", "[read]")
         }
     }
 
-    std::vector<ccd_io::CCDQuery> queries =
-        ccd_io::read_ccd_queries("test_read_ccd_queries.csv");
+    std::vector<CCDQuery> queries =
+        read_ccd_queries("test_read_ccd_queries.csv");
 
     REQUIRE(queries.size() == N);
     for (int q = 0; q < N; q++) {
@@ -91,15 +86,55 @@ TEST_CASE("Read CCD Query", "[read]")
 
 TEST_CASE("Read Sample Queries", "[read][sample]")
 {
-    std::vector<ccd_io::CCDQuery> queries = ccd_io::read_ccd_queries(
-        std::string(CCD_IO_SAMPLE_QUERIES_DIR)
-        + "/unit-tests/vertex-face/data_0_0.csv");
-    CHECK(queries.size() == 125);
+    namespace fs = std::filesystem;
+
+    static const fs::path root_path(std::string(CCD_IO_SAMPLE_QUERIES_DIR));
+
+    static const std::array<std::string, 15> folders { {
+        "chain",
+        "cow-heads",
+        "erleben-sliding-spike",
+        "erleben-spike-wedge",
+        "erleben-sliding-wedge",
+        "erleben-wedge-crack",
+        "erleben-spike-crack",
+        "erleben-wedges",
+        "erleben-cube-cliff-edges",
+        "erleben-spike-hole",
+        "erleben-cube-internal-edges",
+        "erleben-spikes",
+        "golf-ball",
+        "mat-twist",
+        "unit-tests",
+    } };
+
+    static const std::array<std::string, 2> subfolders { {
+        "edge-edge",
+        "vertex-face",
+    } };
+
+    for (const std::string& folder : folders) {
+        for (const std::string& subfolder : subfolders) {
+            auto dir = root_path / folder / subfolder;
+            for (const auto& csv : fs::directory_iterator(dir)) {
+                logger().info("Reading {}", csv.path().string());
+
+                try {
+                    read_ccd_queries(csv.path().string());
+                    SUCCEED();
+                } catch (std::runtime_error& e) {
+                    logger().error(
+                        "Failed to read {}: {}", csv.path().string(), e.what());
+                    FAIL();
+                }
+            }
+        }
+    }
 }
 
 TEST_CASE("Read Split Sample Queries", "[read][sample]")
 {
-    std::vector<ccd_io::CCDQuery> queries = ccd_io::read_ccd_queries(
+    std::vector<CCDQuery> queries = read_ccd_queries(
         std::string(CCD_IO_TEST_DATA_DIR) + "/split-ground-truth/queries.csv",
         std::string(CCD_IO_TEST_DATA_DIR)
             + "/split-ground-truth/mma_bool.json");

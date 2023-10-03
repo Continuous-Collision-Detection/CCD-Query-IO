@@ -2,7 +2,10 @@
 # Tests
 ################################################################################
 
-add_executable(ccd_io_tests test_read_ccd_queries.cpp)
+add_executable(ccd_io_tests
+  test_rational.cpp
+  test_read_ccd_queries.cpp
+)
 
 ################################################################################
 # Required Libraries

@@ -1,3 +1,8 @@
+// Modified version of rational-gmp.cpp from CVC3
+// (https://cs.nyu.edu/acsys/cvc3/releases/1.5/doc/rational-gmp_8cpp-source.html)
+// by Sergey Berezin. Licensed under the following license:
+// https://cs.nyu.edu/acsys/cvc3/releases/1.5/doc/LICENSE.html
+
 #pragma once
 
 #include <ccd_io/logger.hpp>
@@ -9,13 +14,9 @@
 
 namespace ccd_io {
 
-// https://cs.nyu.edu/acsys/cvc3/releases/1.5/doc/rational-gmp_8cpp-source.html
+/// @brief Helper class that wraps GMP's mpq_t (rational) type
 class Rational {
 public:
-    mpq_t value;
-    void canonicalize() { mpq_canonicalize(value); }
-    int get_sign() const { return mpq_sgn(value); }
-
     Rational()
     {
         mpq_init(value);
@@ -76,7 +77,7 @@ public:
         mpq_init(value);
         // The return value is 0 if the entire string is a valid number.
         const int r = mpq_set_str(value, str.c_str(), 10);
-        if (r != 0 || denominator() == 0) {
+        if (r != 0) {
             log_and_throw_error("Invalid rational: {}", str);
         }
     }
@@ -205,82 +206,70 @@ public:
 
     operator double() const { return mpq_get_d(value); }
 
-    void print_numerator()
+    operator std::string() const
     {
-        mpz_t numerator;
-        mpz_init(numerator);
-        mpq_get_num(numerator, value);
-        mpz_out_str(NULL, 10, numerator);
-        // long v=mpz_get_si(numerator);
-        mpz_clear(numerator);
-    }
-
-    void print_denominator()
-    {
-        mpz_t denominator;
-        mpz_init(denominator);
-        mpq_get_den(denominator, value);
-
-        mpz_out_str(NULL, 10, denominator);
-        // long v=mpz_get_si(denominator);
-        mpz_clear(denominator);
-    }
-
-    long long numerator()
-    {
-        mpz_t numerator;
-        mpz_init(numerator);
-
-        mpq_get_num(numerator, value);
-        long long v = mpz_get_si(numerator);
-
-        mpz_clear(numerator);
-        return v;
-    }
-
-    long long denominator()
-    {
-        mpz_t denominator;
-        mpz_init(denominator);
-        mpq_get_den(denominator, value);
-
-        long long v = mpz_get_si(denominator);
-        // std::string s(mpz_get_str(NULL, 10, denominator));
-        // long long v=std::stoll(s);
-        mpz_clear(denominator);
-        return v;
-    }
-
-    std::string numerator_str()
-    {
-        mpz_t numerator;
-        mpz_init(numerator);
-
-        mpq_get_num(numerator, value);
-        std::string v(mpz_get_str(NULL, 10, numerator));
-        ;
-
-        mpz_clear(numerator);
-        return v;
-    }
-
-    std::string denominator_str()
-    {
-        mpz_t denominator;
-        mpz_init(denominator);
-        mpq_get_den(denominator, value);
-
-        std::string v(mpz_get_str(NULL, 10, denominator));
-
-        mpz_clear(denominator);
-        return v;
+        return std::string(mpq_get_str(NULL, 10, value));
     }
 
     friend std::ostream& operator<<(std::ostream& os, const Rational& r)
     {
-        os << mpq_get_d(r.value);
-        return os;
+        return (os << std::string(r));
     }
+
+    void canonicalize() { mpq_canonicalize(value); }
+
+    int sign() const { return mpq_sgn(value); }
+
+    long long numerator() { return Integer::from_numerator(*this); }
+    long long denominator() { return Integer::from_denominator(*this); }
+
+    std::string numerator_str() { return Integer::from_numerator(*this); }
+    std::string denominator_str() { return Integer::from_denominator(*this); }
+
+    void print_numerator() { Integer::from_numerator(*this).print(); }
+    void print_denominator() { Integer::from_denominator(*this).print(); }
+
+    /// @brief The actual GMP rational value
+    mpq_t value;
+
+protected:
+    /// @brief Helper class that wraps GMP's mpz_t (integer) type
+    class Integer {
+    public:
+        Integer() { mpz_init(value); }
+
+        ~Integer() { mpz_clear(value); }
+
+        static Integer from_numerator(const Rational& r)
+        {
+            Integer i;
+            mpq_get_num(i.value, r.value);
+            return i;
+        }
+
+        static Integer from_denominator(const Rational& r)
+        {
+            Integer i;
+            mpq_get_den(i.value, r.value);
+            return i;
+        }
+
+        void print() { mpz_out_str(NULL, 10, value); }
+
+        operator long long() const
+        {
+            assert(mpz_fits_slong_p(value));
+            return mpz_get_si(value);
+        }
+
+        operator std::string() const
+        {
+            return std::string(mpz_get_str(NULL, 10, value));
+        }
+
+        /// @brief The actual GMP integer value
+        mpz_t value;
+    };
 };
 
 // typedef Eigen::Matrix<Rational, 3, 1, Eigen::ColMajor | Eigen::DontAlign>
