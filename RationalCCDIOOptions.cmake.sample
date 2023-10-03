@@ -23,3 +23,10 @@
 
 # Set deployment platform for macOS
 # set(CMAKE_OSX_DEPLOYMENT_TARGET 10.12 CACHE STRING "macOS deployment target")
+
+################################################################################
+# Project Options
+################################################################################
+
+option(CCD_IO_BUILD_TESTS             "Build unit-tests"            OFF)
+option(CCD_IO_DOWNLOAD_SAMPLE_QUERIES "Download sample CCD queries" OFF)

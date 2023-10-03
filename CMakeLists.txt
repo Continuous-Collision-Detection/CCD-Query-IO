@@ -127,7 +127,7 @@ target_link_libraries(ccd_io_ccd_io PUBLIC spdlog::spdlog)
 
 if(CCD_IO_DOWNLOAD_SAMPLE_QUERIES)
   include(sample_queries)
-  target_link_libraries(ccd_io_tests PUBLIC ccd_io::sample_queries)
+  target_link_libraries(ccd_io_ccd_io PUBLIC ccd_io::sample_queries)
 endif()
 
 # Warnings
