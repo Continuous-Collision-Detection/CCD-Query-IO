@@ -2,7 +2,6 @@ set(SOURCES
   ccd_query.hpp
   logger.cpp
   logger.hpp
-  rational.hpp
   read_ccd_queries.cpp
   read_ccd_queries.hpp
 )

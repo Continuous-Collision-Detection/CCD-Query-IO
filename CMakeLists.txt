@@ -113,9 +113,9 @@ target_compile_definitions(ccd_io_ccd_io PUBLIC NOMINMAX)
 # Dependencies
 ################################################################################
 
-# GMP
-find_package(GMP REQUIRED)
-target_link_libraries(ccd_io_ccd_io PUBLIC gmp::gmp)
+# rational-cpp (requires GMP)
+include(rational_cpp)
+target_link_libraries(ccd_io_ccd_io PUBLIC rational::rational)
 
 # JSON
 include(json)

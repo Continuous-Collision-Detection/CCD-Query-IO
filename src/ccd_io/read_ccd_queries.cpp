@@ -1,8 +1,8 @@
 #include "read_ccd_queries.hpp"
 
-#include <ccd_io/rational.hpp>
 #include <ccd_io/logger.hpp>
 
+#include <rational/rational.hpp>
 #include <nlohmann/json.hpp>
 
 #include <array>
@@ -49,8 +49,8 @@ std::vector<CCDQuery> read_ccd_queries(const std::string& filename)
         std::getline(line_stream, line_items[6], ','); // optional ground truth
 
         for (int j = 0; j < 3; j++) {
-            queries.back().vertices[i % 8][j] =
-                Rational(line_items[2 * j + 0], line_items[2 * j + 1]);
+            queries.back().vertices[i % 8][j] = rational::Rational(
+                line_items[2 * j + 0], line_items[2 * j + 1]);
             if (!std::isfinite(queries.back().vertices[i % 8][j])) {
                 log_and_throw_error(
                     "Line {} in {} contains a non-integer!", i, filename);
