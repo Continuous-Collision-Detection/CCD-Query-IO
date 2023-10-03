@@ -117,8 +117,6 @@ TEST_CASE("Read Sample Queries", "[read][sample]")
         for (const std::string& subfolder : subfolders) {
             auto dir = root_path / folder / subfolder;
             for (const auto& csv : fs::directory_iterator(dir)) {
-                logger().info("Reading {}", csv.path().string());
-
                 try {
                     read_ccd_queries(csv.path().string());
                     SUCCEED();
