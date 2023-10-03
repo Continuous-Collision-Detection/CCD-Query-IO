@@ -5,12 +5,12 @@ endif()
 include(ExternalProject)
 include(FetchContent)
 
-set(RIO_SAMPLE_QUERIES_DIR "${PROJECT_SOURCE_DIR}/tests/data/sample-queries/" CACHE PATH "Where should we download sample queries?")
+set(CCD_IO_SAMPLE_QUERIES_DIR "${PROJECT_SOURCE_DIR}/tests/data/sample-queries/" CACHE PATH "Where should we download sample queries?")
 
 ExternalProject_Add(
   sample_queries_download
   PREFIX "${FETCHCONTENT_BASE_DIR}/sample-queries"
-  SOURCE_DIR ${RIO_SAMPLE_QUERIES_DIR}
+  SOURCE_DIR ${CCD_IO_SAMPLE_QUERIES_DIR}
 
   GIT_REPOSITORY https://github.com/Continuous-Collision-Detection/Sample-Queries.git
   GIT_TAG 4d6cce33477d8d5c666c31c8ea23e1aea97be371
@@ -22,9 +22,9 @@ ExternalProject_Add(
 )
 
 # Create a dummy target for convenience
-add_library(rio_sample_queries INTERFACE)
-add_library(rio::sample_queries ALIAS rio_sample_queries)
+add_library(ccd_io_sample_queries INTERFACE)
+add_library(ccd_io::sample_queries ALIAS ccd_io_sample_queries)
 
-add_dependencies(rio_sample_queries sample_queries_download)
+add_dependencies(ccd_io_sample_queries sample_queries_download)
 
-target_compile_definitions(rio_sample_queries INTERFACE RIO_SAMPLE_QUERIES_DIR=\"${RIO_SAMPLE_QUERIES_DIR}\")
+target_compile_definitions(ccd_io_sample_queries INTERFACE CCD_IO_SAMPLE_QUERIES_DIR=\"${CCD_IO_SAMPLE_QUERIES_DIR}\")

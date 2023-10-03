@@ -2,7 +2,7 @@
 
 #include <array>
 
-namespace rio {
+namespace ccd_io {
 struct CCDQuery {
     /// @brief The vertices of the query.
     /// Order:
@@ -15,4 +15,4 @@ struct CCDQuery {
     /// @brief The ground truth result of the query.
     bool ground_truth;
 };
-} // namespace rio
+} // namespace ccd_io

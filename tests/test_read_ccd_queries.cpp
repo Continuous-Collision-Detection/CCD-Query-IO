@@ -1,14 +1,14 @@
 #include <catch2/catch_all.hpp>
 
-#include <rio/read_rational_ccd_queries.hpp>
-#include <rio/logger.hpp>
+#include <ccd_io/read_ccd_queries.hpp>
+#include <ccd_io/logger.hpp>
 
 #include <fstream>
 
 void check_fails_to_read(std::string filename)
 {
     try {
-        rio::read_rational_ccd_queries(filename);
+        ccd_io::read_ccd_queries(filename);
         FAIL();
     } catch (...) {
         SUCCEED();
@@ -17,13 +17,13 @@ void check_fails_to_read(std::string filename)
 
 TEST_CASE("Nonexistent input", "[read]")
 {
-    rio::logger().set_level(spdlog::level::off);
+    ccd_io::logger().set_level(spdlog::level::off);
     check_fails_to_read("nonexistent_file.csv");
 }
 
 TEST_CASE("Bad input", "[read]")
 {
-    rio::logger().set_level(spdlog::level::off);
+    ccd_io::logger().set_level(spdlog::level::off);
 
     std::function<std::string(int)> line;
     SECTION("Too few lines")
@@ -63,19 +63,19 @@ TEST_CASE("Bad input", "[read]")
     check_fails_to_read("bad_input.csv");
 }
 
-TEST_CASE("Read Rational CCD Query", "[read]")
+TEST_CASE("Read CCD Query", "[read]")
 {
     constexpr int N = 2;
     constexpr double r = 0.25;
     {
-        std::ofstream of("test_read_rational_ccd_queries.csv");
+        std::ofstream of("test_read_ccd_queries.csv");
         for (int i = 0; i < 8 * N; i++) {
             of << "1,4,1,4,1,4,1\n";
         }
     }
 
-    std::vector<rio::CCDQuery> queries =
-        rio::read_rational_ccd_queries("test_read_rational_ccd_queries.csv");
+    std::vector<ccd_io::CCDQuery> queries =
+        ccd_io::read_ccd_queries("test_read_ccd_queries.csv");
 
     REQUIRE(queries.size() == N);
     for (int q = 0; q < N; q++) {
@@ -91,17 +91,18 @@ TEST_CASE("Read Rational CCD Query", "[read]")
 
 TEST_CASE("Read Sample Queries", "[read][sample]")
 {
-    std::vector<rio::CCDQuery> queries = rio::read_rational_ccd_queries(
-        std::string(RIO_SAMPLE_QUERIES_DIR)
+    std::vector<ccd_io::CCDQuery> queries = ccd_io::read_ccd_queries(
+        std::string(CCD_IO_SAMPLE_QUERIES_DIR)
         + "/unit-tests/vertex-face/data_0_0.csv");
     CHECK(queries.size() == 125);
 }
 
 TEST_CASE("Read Split Sample Queries", "[read][sample]")
 {
-    std::vector<rio::CCDQuery> queries = rio::read_rational_ccd_queries(
-        std::string(RIO_TEST_DATA_DIR) + "/split-ground-truth/queries.csv",
-        std::string(RIO_TEST_DATA_DIR) + "/split-ground-truth/mma_bool.json");
+    std::vector<ccd_io::CCDQuery> queries = ccd_io::read_ccd_queries(
+        std::string(CCD_IO_TEST_DATA_DIR) + "/split-ground-truth/queries.csv",
+        std::string(CCD_IO_TEST_DATA_DIR)
+            + "/split-ground-truth/mma_bool.json");
     REQUIRE(queries.size() == 2);
     CHECK(queries[0].ground_truth == false);
     CHECK(queries[1].ground_truth == false);

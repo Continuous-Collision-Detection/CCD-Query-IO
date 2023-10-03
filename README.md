@@ -1,6 +1,6 @@
-# Rational CCD Query IO
+# CCD Query IO
 
-Read rational CCD queries using GMP.
+Read CCD queries in rational CSV data format using GMP.
 
 ### Existing Dataset
 
@@ -19,17 +19,17 @@ For example,
 ```cmake
 include(FetchContent)
 FetchContent_Declare(
-    rio
-    GIT_REPOSITORY https://github.com/continuous-collision-detection/rational-ccd-query-io.git
-    GIT_TAG ${RIO_GIT_TAG}
+    ccd_io
+    GIT_REPOSITORY https://github.com/Continuous-Collision-Detection/CCD-Query-IO.git
+    GIT_TAG ${CCD_IO_GIT_TAG}
 )
-FetchContent_MakeAvailable(rio)
+FetchContent_MakeAvailable(ccd_io)
 ```
 
-where `RIO_GIT_TAG` is set to the version of the toolkit you want to use. This will download and add the reader to CMake. The reader can then be linked against using
+where `CCD_IO_GIT_TAG` is set to the version of the toolkit you want to use. This will download and add the reader to CMake. The reader can then be linked against using
 
 ```cmake
-target_link_libraries(${PROJECT_NAME} PUBLIC rio::rio)
+target_link_libraries(${PROJECT_NAME} PUBLIC ccd_io::ccd_io)
 ```
 
 where `PROJECT_NAME` is the name of your library/binary.
@@ -40,7 +40,7 @@ Almost all required dependencies are downloaded through CMake depending on the b
 
 The following libraries are used in this project:
 
-* [GMP](https://gmplib.org/): rational arithmetic used for exact intersection checks
+* [GMP](https://gmplib.org/): reading rational numbers from strings
     * GMP must be installed at a system level
 * [Nlohmann JSON](https://github.com/nlohmann/json): reading JSON files
 * [spdlog](https://github.com/gabime/spdlog): logging information
@@ -48,12 +48,12 @@ The following libraries are used in this project:
 ## Usage
 
 ```c++
-#include <rio/read_rational_ccd_queries.hpp>
+#include <ccd_io/read_ccd_queries.hpp>
 
 // If the ground truth is in the same CSV file
-std::vector<CCDQuery> queries = read_rational_ccd_queries("queries.csv");
+std::vector<CCDQuery> queries = read_ccd_queries("queries.csv");
 // or if the ground truth is in a separate JSON file
-std::vector<CCDQuery> queries = read_rational_ccd_queries("queries.csv", "ground_truth.json");
+std::vector<CCDQuery> queries = read_ccd_queries("queries.csv", "ground_truth.json");
 ```
 
 CCDQuery is defined as follows:
@@ -96,5 +96,5 @@ Contributions are welcome! Please submit a pull request with your changes.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/Continuous-Collision-Detection/rational-ccd-query-io/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/Continuous-Collision-Detection/CCD-Query-IO/blob/main/LICENSE) file for details.
 

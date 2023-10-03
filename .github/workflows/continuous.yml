@@ -76,7 +76,7 @@ jobs:
           mkdir -p build
           cd build
           cmake .. \
-            -DRIO_BUILD_TESTS=ON \
+            -DCCD_IO_BUILD_TESTS=ON \
             -DCMAKE_BUILD_TYPE=${{ matrix.config }}
 
       - name: Configure (Windows)
@@ -85,7 +85,7 @@ jobs:
         run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=x64
           cmake -G Ninja ^
-            -DRIO_BUILD_TESTS=ON ^
+            -DCCD_IO_BUILD_TESTS=ON ^
             -DCMAKE_BUILD_TYPE=${{ matrix.config }} ^
             -B build ^
             -S .

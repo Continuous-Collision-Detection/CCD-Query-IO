@@ -30,12 +30,12 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   # https://developercommunity.visualstudio.com/content/problem/48897/c1090-pdb-api-call-failed-error-code-23.html
   add_compile_options(/FS)
 else()
-  include(rio_filter_flags)
-  set(RIO_GLOBAL_FLAGS
+  include(ccd_io_filter_flags)
+  set(CCD_IO_GLOBAL_FLAGS
       -fdiagnostics-color=always # GCC
       -fcolor-diagnostics # Clang
   )
-  rio_filter_flags(RIO_GLOBAL_FLAGS)
-  message(STATUS "Adding global flags: ${RIO_GLOBAL_FLAGS}")
-  add_compile_options(${RIO_GLOBAL_FLAGS})
+  ccd_io_filter_flags(CCD_IO_GLOBAL_FLAGS)
+  message(STATUS "Adding global flags: ${CCD_IO_GLOBAL_FLAGS}")
+  add_compile_options(${CCD_IO_GLOBAL_FLAGS})
 endif()

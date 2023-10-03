@@ -1,13 +1,13 @@
 #pragma once
 
-#include <rio/logger.hpp>
+#include <ccd_io/logger.hpp>
 
 #include <gmp.h>
 #include <cassert>
 #include <iostream>
 #include <cmath>
 
-namespace rio {
+namespace ccd_io {
 
 // https://cs.nyu.edu/acsys/cvc3/releases/1.5/doc/rational-gmp_8cpp-source.html
 class Rational {
@@ -288,4 +288,4 @@ public:
 // typedef Eigen::Array<Rational, 3, 1, Eigen::ColMajor | Eigen::DontAlign>
 //     Array3r;
 
-} // namespace rio
+} // namespace ccd_io

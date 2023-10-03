@@ -4,7 +4,7 @@
 
 #include <sstream>
 
-namespace rio {
+namespace ccd_io {
 
 namespace {
 
@@ -27,7 +27,7 @@ spdlog::logger& logger()
         // functions), names must be unique, since the logger is registered
         // globally. Otherwise, you will need to create the logger manually. See
         // https://github.com/gabime/spdlog/wiki/2.-Creating-loggers
-        static auto default_logger = spdlog::stdout_color_mt("rio");
+        static auto default_logger = spdlog::stdout_color_mt("ccd_io");
         return *default_logger;
     }
 }
@@ -44,4 +44,4 @@ void log_and_throw_error(const std::string& msg)
     throw std::runtime_error(msg);
 }
 
-} // namespace rio
+} // namespace ccd_io

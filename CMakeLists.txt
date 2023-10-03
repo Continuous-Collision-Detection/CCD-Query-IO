@@ -1,14 +1,14 @@
 # Detects whether this is a top-level project
 get_directory_property(HAS_PARENT PARENT_DIRECTORY)
 if(HAS_PARENT)
-  set(RIO_TOPLEVEL_PROJECT OFF)
+  set(CCD_IO_TOPLEVEL_PROJECT OFF)
 else()
-  set(RIO_TOPLEVEL_PROJECT ON)
+  set(CCD_IO_TOPLEVEL_PROJECT ON)
 endif()
 
 # Check required CMake version
 set(REQUIRED_CMAKE_VERSION "3.18.0")
-if(RIO_TOPLEVEL_PROJECT)
+if(CCD_IO_TOPLEVEL_PROJECT)
   cmake_minimum_required(VERSION ${REQUIRED_CMAKE_VERSION})
 else()
   # Don't use cmake_minimum_required here to avoid implicitly overriding parent policies
@@ -19,19 +19,19 @@ endif()
 
 # Include user-provided default options if available. We do that before the main
 # `project()` so that we can define the C/C++ compilers from the option file.
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/RationalCCDIOOptions.cmake)
-  message(STATUS "Using local options file: ${CMAKE_CURRENT_SOURCE_DIR}/RationalCCDIOOptions.cmake")
-  include(${CMAKE_CURRENT_SOURCE_DIR}/RationalCCDIOOptions.cmake)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/CCDQueryIOOptions.cmake)
+  message(STATUS "Using local options file: ${CMAKE_CURRENT_SOURCE_DIR}/CCDQueryIOOptions.cmake")
+  include(${CMAKE_CURRENT_SOURCE_DIR}/CCDQueryIOOptions.cmake)
 endif()
 
 # Enable ccache if available
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
-  option(RIO_WITH_CCACHE "Enable ccache when building RationalCCDIO" ${RIO_TOPLEVEL_PROJECT})
+  option(CCD_IO_WITH_CCACHE "Enable ccache when building CCDQueryIO" ${CCD_IO_TOPLEVEL_PROJECT})
 else()
-  option(RIO_WITH_CCACHE "Enable ccache when building RationalCCDIO" OFF)
+  option(CCD_IO_WITH_CCACHE "Enable ccache when building CCDQueryIO" OFF)
 endif()
-if(RIO_WITH_CCACHE AND CCACHE_PROGRAM)
+if(CCD_IO_WITH_CCACHE AND CCACHE_PROGRAM)
   message(STATUS "Enabling Ccache support (${CCACHE_PROGRAM})")
   set(ccacheEnv
     CCACHE_BASEDIR=${CMAKE_BINARY_DIR}
@@ -56,29 +56,29 @@ endif()
 
 ################################################################################
 
-project(RationalCCDIO LANGUAGES CXX)
+project(CCDQueryIO LANGUAGES CXX)
 
-option(RIO_BUILD_TESTS             "Build unit-tests"            ${RIO_TOPLEVEL_PROJECT})
-option(RIO_DOWNLOAD_SAMPLE_QUERIES "Download sample CCD queries"                     OFF)
+option(CCD_IO_BUILD_TESTS             "Build unit-tests"            ${CCD_IO_TOPLEVEL_PROJECT})
+option(CCD_IO_DOWNLOAD_SAMPLE_QUERIES "Download sample CCD queries"                        OFF)
 
 # Set default minimum C++ standard
-if(RIO_TOPLEVEL_PROJECT)
+if(CCD_IO_TOPLEVEL_PROJECT)
   set(CMAKE_CXX_STANDARD 17)
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
   set(CMAKE_CXX_EXTENSIONS OFF)
 endif()
 
 ### Configuration
-set(RIO_SOURCE_DIR "${PROJECT_SOURCE_DIR}/src/rio")
-set(RIO_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/src")
+set(CCD_IO_SOURCE_DIR "${PROJECT_SOURCE_DIR}/src/ccd_io")
+set(CCD_IO_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/src")
 
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/rio/")
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/ccd_io/")
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/recipes/")
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/find/")
 
 # General CMake utils
-include(rio_cpm_cache)
-include(rio_use_colors)
+include(ccd_io_cpm_cache)
+include(ccd_io_use_colors)
 
 # Generate position-independent code by default
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -88,26 +88,26 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 ################################################################################
 
 # Add an empty library and fill in the list of sources in `src/CMakeLists.txt`.
-add_library(rio_rio)
-add_library(rio::rio ALIAS rio_rio)
+add_library(ccd_io_ccd_io)
+add_library(ccd_io::ccd_io ALIAS ccd_io_ccd_io)
 
 # Fill in configuration options
 # configure_file(
-#   "${RIO_SOURCE_DIR}/config.hpp.in"
-#   "${RIO_SOURCE_DIR}/config.hpp")
+#   "${CCD_IO_SOURCE_DIR}/config.hpp.in"
+#   "${CCD_IO_SOURCE_DIR}/config.hpp")
 
-# Add source and header files to rio
-add_subdirectory("${RIO_SOURCE_DIR}")
+# Add source and header files to ccd_io
+add_subdirectory("${CCD_IO_SOURCE_DIR}")
 
 # Public include directory for IPC Toolkit
-target_include_directories(rio_rio PUBLIC "${RIO_INCLUDE_DIR}")
+target_include_directories(ccd_io_ccd_io PUBLIC "${CCD_IO_INCLUDE_DIR}")
 
 ################################################################################
 # Optional Definitions
 ################################################################################
 
 # For MSVC, do not use the min and max macros.
-target_compile_definitions(rio_rio PUBLIC NOMINMAX)
+target_compile_definitions(ccd_io_ccd_io PUBLIC NOMINMAX)
 
 ################################################################################
 # Dependencies
@@ -115,38 +115,38 @@ target_compile_definitions(rio_rio PUBLIC NOMINMAX)
 
 # GMP
 include(gmp)
-target_link_libraries(rio_rio PUBLIC GMP::GMP)
+target_link_libraries(ccd_io_ccd_io PUBLIC GMP::GMP)
 
 # JSON
 include(json)
-target_link_libraries(rio_rio PUBLIC nlohmann_json::nlohmann_json)
+target_link_libraries(ccd_io_ccd_io PUBLIC nlohmann_json::nlohmann_json)
 
 # Logger
 include(spdlog)
-target_link_libraries(rio_rio PUBLIC spdlog::spdlog)
+target_link_libraries(ccd_io_ccd_io PUBLIC spdlog::spdlog)
 
-if(RIO_DOWNLOAD_SAMPLE_QUERIES)
+if(CCD_IO_DOWNLOAD_SAMPLE_QUERIES)
   include(sample_queries)
-  target_link_libraries(rio_tests PUBLIC rio::sample_queries)
+  target_link_libraries(ccd_io_tests PUBLIC ccd_io::sample_queries)
 endif()
 
 # Warnings
-include(rio_warnings)
-target_link_libraries(rio_rio PRIVATE rio::warnings)
+include(ccd_io_warnings)
+target_link_libraries(ccd_io_ccd_io PRIVATE ccd_io::warnings)
 
 ################################################################################
 # Compiler options
 ################################################################################
 
 # Use C++17
-target_compile_features(rio_rio PUBLIC cxx_std_17)
+target_compile_features(ccd_io_ccd_io PUBLIC cxx_std_17)
 
 ################################################################################
 # Tests
 ################################################################################
 
 # Enable unit testing at the root level
-if(RIO_TOPLEVEL_PROJECT AND RIO_BUILD_TESTS)
+if(CCD_IO_TOPLEVEL_PROJECT AND CCD_IO_BUILD_TESTS)
   include(CTest)
   enable_testing()
   add_subdirectory(tests)

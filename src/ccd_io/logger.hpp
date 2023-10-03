@@ -6,7 +6,7 @@
 #include <spdlog/spdlog.h>
 // clang-format on
 
-namespace rio {
+namespace ccd_io {
 
 /// Retrieves the current logger.
 /// @return A const reference to the logger object.
@@ -26,4 +26,4 @@ log_and_throw_error(const std::string& msg, const Args&... args)
     log_and_throw_error(fmt::format(msg, args...));
 }
 
-} // namespace rio
+} // namespace ccd_io

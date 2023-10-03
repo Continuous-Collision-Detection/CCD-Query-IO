@@ -3,11 +3,11 @@
 # http://stackoverflow.com/questions/5088460/flags-to-enable-thorough-and-verbose-g-warnings
 ################################################################################
 
-if(TARGET rio::warnings)
+if(TARGET ccd_io::warnings)
   return()
 endif()
 
-set(RIO_WARNING_FLAGS
+set(CCD_IO_WARNING_FLAGS
   -Wall
   -Wextra
   -pedantic
@@ -149,12 +149,12 @@ set(RIO_WARNING_FLAGS
 
 # Flags above don't make sense for MSVC
 if(MSVC)
-  set(RIO_WARNING_FLAGS)
+  set(CCD_IO_WARNING_FLAGS)
 endif()
 
-add_library(rio_warnings INTERFACE)
-add_library(rio::warnings ALIAS rio_warnings)
+add_library(ccd_io_warnings INTERFACE)
+add_library(ccd_io::warnings ALIAS ccd_io_warnings)
 
-include(rio_filter_flags)
-rio_filter_flags(RIO_WARNING_FLAGS)
-target_compile_options(rio_warnings INTERFACE ${RIO_WARNING_FLAGS})
+include(ccd_io_filter_flags)
+ccd_io_filter_flags(CCD_IO_WARNING_FLAGS)
+target_compile_options(ccd_io_warnings INTERFACE ${CCD_IO_WARNING_FLAGS})

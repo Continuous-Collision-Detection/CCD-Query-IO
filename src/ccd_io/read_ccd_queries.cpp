@@ -1,7 +1,7 @@
-#include "read_rational_ccd_queries.hpp"
+#include "read_ccd_queries.hpp"
 
-#include <rio/rational.hpp>
-#include <rio/logger.hpp>
+#include <ccd_io/rational.hpp>
+#include <ccd_io/logger.hpp>
 
 #include <nlohmann/json.hpp>
 
@@ -9,9 +9,9 @@
 #include <fstream>
 #include <sstream>
 
-namespace rio {
+namespace ccd_io {
 
-std::vector<CCDQuery> read_rational_ccd_queries(const std::string& filename)
+std::vector<CCDQuery> read_ccd_queries(const std::string& filename)
 {
     // NOTE: If the file contains N lines, N % 8 == 0 because every 8 lines are
     // a single query.
@@ -81,12 +81,11 @@ std::vector<CCDQuery> read_rational_ccd_queries(const std::string& filename)
     return queries;
 }
 
-std::vector<CCDQuery> read_rational_ccd_queries(
+std::vector<CCDQuery> read_ccd_queries(
     const std::string& vertices_filename,
     const std::string& ground_truth_filename)
 {
-    std::vector<CCDQuery> queries =
-        read_rational_ccd_queries(vertices_filename);
+    std::vector<CCDQuery> queries = read_ccd_queries(vertices_filename);
 
     nlohmann::json ground_truths;
     {
@@ -124,4 +123,4 @@ std::vector<CCDQuery> read_rational_ccd_queries(
     return queries;
 }
 
-} // namespace rio
+} // namespace ccd_io
