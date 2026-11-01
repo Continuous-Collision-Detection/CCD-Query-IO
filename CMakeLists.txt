@@ -113,6 +113,12 @@ target_compile_definitions(ccd_io_ccd_io PUBLIC NOMINMAX)
 # Dependencies
 ################################################################################
 
+# Logger
+# Link before rational-cpp because otherwise GMP will add the system include
+# path before spdlog.
+include(spdlog)
+target_link_libraries(ccd_io_ccd_io PUBLIC spdlog::spdlog)
+
 # rational-cpp (requires GMP)
 include(rational_cpp)
 target_link_libraries(ccd_io_ccd_io PUBLIC rational::rational)
@@ -120,10 +126,6 @@ target_link_libraries(ccd_io_ccd_io PUBLIC rational::rational)
 # JSON
 include(json)
 target_link_libraries(ccd_io_ccd_io PUBLIC nlohmann_json::nlohmann_json)
-
-# Logger
-include(spdlog)
-target_link_libraries(ccd_io_ccd_io PUBLIC spdlog::spdlog)
 
 if(CCD_IO_DOWNLOAD_SAMPLE_QUERIES)
   include(sample_queries)
